@@ -61,13 +61,14 @@ J-Bridge Mail Assistant는 이 과정을 다음처럼 도와줍니다.
 ## 기술 구성
 
 - Frontend: HTML, CSS, JavaScript
-- Backend: Node.js HTTP server
+- Local Backend: Node.js HTTP server
+- Deployment Backend: Cloudflare Pages Functions
 - AI: OpenAI Responses API
-- Runtime: Local server
+- Runtime: Local server / Cloudflare Pages
 
-API 키는 브라우저에 직접 노출하지 않고, 로컬 서버의 `.env` 파일에서만 읽도록 구성했습니다.
+API 키는 브라우저에 직접 노출하지 않고, 로컬에서는 `.env` 파일에서, Cloudflare 배포 환경에서는 Variables/Secrets에서만 읽도록 구성했습니다.
 
-## 실행 방법
+## 로컬 실행 방법
 
 1. `.env.example` 파일을 복사해 `.env` 파일을 만듭니다.
 2. `.env` 파일에 OpenAI API 키를 입력합니다.
@@ -91,9 +92,32 @@ npm start
 http://127.0.0.1:8787/
 ```
 
+## Cloudflare Pages 배포 방법
+
+이 프로젝트는 Cloudflare Pages에서도 실행할 수 있도록 `functions/api` 폴더를 포함하고 있습니다.
+
+Cloudflare Pages에 배포할 때는 다음처럼 설정합니다.
+
+```text
+Framework preset: None
+Build command: 비워두기
+Build output directory: .
+Root directory: 저장소 루트
+```
+
+Cloudflare dashboard의 `Settings > Variables and Secrets`에서 아래 값을 추가합니다.
+
+```text
+OPENAI_API_KEY=your_api_key_here
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+배포 후 웹앱은 Cloudflare Pages가 정적 화면을 제공하고, `/api/analyze` 요청은 Cloudflare Pages Function이 OpenAI API를 호출합니다.
+
 ## 주의사항
 
 - `.env` 파일은 GitHub에 올리면 안 됩니다.
+- `.dev.vars` 파일도 GitHub에 올리면 안 됩니다.
 - 입력한 메일 내용은 분석을 위해 OpenAI API로 전송됩니다.
 - AI가 작성한 회신 초안은 실제 발송 전 반드시 사람이 검토해야 합니다.
 - 첨부파일 분석 기능은 포함되어 있지 않습니다.

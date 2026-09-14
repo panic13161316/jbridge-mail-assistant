@@ -69,7 +69,7 @@ analyzeButton.addEventListener('click', async () => {
     if (!response.ok) throw new Error(data.error || '분석에 실패했습니다.');
     result = data.result; render(result); copyButton.disabled = false; state.textContent = '실제 AI 분석 완료 · 검토 필요';
   } catch (error) {
-    box.className = 'empty'; box.textContent = error.name === 'TimeoutError' ? '응답이 늦어지고 있습니다. 잠시 후 다시 시도해 주세요.' : error instanceof TypeError ? '서버 연결을 확인해 주세요. start.cmd로 실행한 상태여야 합니다.' : error.message;
+    box.className = 'empty'; box.textContent = error.name === 'TimeoutError' ? '응답이 늦어지고 있습니다. 잠시 후 다시 시도해 주세요.' : error instanceof TypeError ? '서버 또는 API 연결을 확인해 주세요. 로컬에서는 start.cmd 실행이 필요합니다.' : error.message;
     state.textContent = '분석 실패';
   } finally { controls.forEach(el => el.disabled = false); box.setAttribute('aria-busy', 'false'); refreshStatus(); }
 });
